@@ -1,24 +1,27 @@
 const { Router } = require("express");
+const { getAccessToken, getChannelInfo } = require("./twitch");
 
 const router = Router();
 
-router.get("/getStuff", (req, res) => {
-  res.json({
-    data: {
-      wow: "WOWO SWEEET!!!!! :D",
-      hello: "world",
-    },
-  });
+router.use(async (req, res, next) => {
+  try {
+    // get access token #YoDawgMemeLOL
+    let token = await getAccessToken();
+    req.accessToken = token.access_token;
+    next();
+  } catch (err) {
+    console.error(err);
+    next();
+  }
 });
 
-router.post("/doStuff", (req, res) => {
-  res.json({
-    data: {
-      hello: "stuff was done",
-      wow: "cool",
-    },
-    body: req.body,
-  });
+router.get("/mychannel", async (req, res) => {
+  try {
+    let data = await getChannelInfo(req.accessToken);
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 module.exports = router;
