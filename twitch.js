@@ -26,24 +26,34 @@ const getUser = async (accessToken) => {
 };
 
 const getChannelInfo = async (accessToken) => {
-  try {
-    let user = await getUser(accessToken);
-    let url = `${baseUrl}/channels?broadcaster_id=${user.id}`;
-    let res = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Client-ID": clientId,
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    return res.json();
-  } catch (err) {
-    return Promise.reject(err);
-  }
+  let user = await getUser(accessToken);
+  let url = `${baseUrl}/channels?broadcaster_id=${user.id}`;
+  let res = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Client-ID": clientId,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return res.json();
+};
+
+const getFollowers = async (accessToken) => {
+  let user = await getUser(accessToken);
+  let url = `${baseUrl}/users/follows?to_id=${user.id}`;
+  let res = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Client-ID": clientId,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return res.json();
 };
 
 module.exports = {
   getAccessToken,
   getUser,
   getChannelInfo,
+  getFollowers,
 };
